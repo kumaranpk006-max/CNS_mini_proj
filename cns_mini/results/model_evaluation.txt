@@ -1,0 +1,52 @@
+================================================================================
+          AI-BASED PHISHING URL DETECTION SYSTEM - MODEL EVALUATION             
+================================================================================
+Generated On          : 2026-10-04 20:25:30
+Algorithm             : Random Forest (Weka 3.8.6)
+Dataset               : Training Dataset.arff (UCI Phishing Websites Benchmark)
+Total Dataset Size    : 11055 instances
+Training Partition    : 8844 instances (80.00%)
+Testing Partition     : 2211 instances (20.00%)
+Number of Trees       : 100
+Random Seed           : 42
+Training Duration     : 1.15 seconds
+--------------------------------------------------------------------------------
+
+1. OVERALL PERFORMANCE METRICS (ON UNSEEN TEST DATA)
+--------------------------------------------------------------------------------
+  Correctly Classified Instances   : 2157   (97.5577%)
+  Incorrectly Classified Instances : 54     (2.4423%)
+  Kappa Statistic                  : 0.9504
+  Mean Absolute Error (MAE)        : 0.0526
+  Root Mean Squared Error (RMSE)   : 0.1466
+  Weighted Precision               : 0.9757
+  Weighted Recall                  : 0.9756
+  Weighted F-Measure               : 0.9756
+  Weighted Area Under ROC (ROC-AUC): 0.9931
+  Weighted Area Under PR (PR-AUC)  : 0.9928
+
+2. DETAILED ACCURACY BY CLASS
+--------------------------------------------------------------------------------
+Class Label     Value        Precision  Recall     F-Measure  ROC-AUC    Instances 
+--------------------------------------------------------------------------------
+PHISHING        -1           0.9813     0.9632     0.9721     0.9931     978       
+LEGITIMATE      1            0.9712     0.9854     0.9783     0.9931     1233      
+--------------------------------------------------------------------------------
+
+3. CONFUSION MATRIX
+--------------------------------------------------------------------------------
+   a      b   <-- Classified as
+   942     36 | a = PHISHING (Value '-1')
+    18   1215 | b = LEGITIMATE (Value '1')
+
+4. CONFUSION MATRIX INTERPRETATION (CYBERSECURITY CONTEXT)
+--------------------------------------------------------------------------------
+  • True Positives  (Phishing correctly flagged)      : 942
+  • True Negatives  (Legitimate correctly permitted) : 1215
+  • False Positives (Legitimate wrongly flagged)      : 18 (Inconvenience to user)
+  • False Negatives (Phishing missed - HIGH RISK)    : 36 (Critical security risk)
+
+CYBERSECURITY NOTE: In phishing detection, False Negatives (FN) are significantly
+more dangerous than False Positives (FP). A false negative allows a phishing attack
+to evade detection, potentially exposing users to credential theft or malware.
+================================================================================

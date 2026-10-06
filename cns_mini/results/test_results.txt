@@ -1,0 +1,154 @@
+====================================================================================================
+                  AI-BASED PHISHING URL DETECTION SYSTEM - TEST RESULTS LOG                         
+====================================================================================================
+Test Run Timestamp : 2026-10-04 20:35:43
+Model Executed     : Random Forest (100 Trees, Weka 3.8.6)
+Dataset Benchmark  : Training Dataset.arff (11,055 instances, 30 features)
+Total Test Cases   : 11
+----------------------------------------------------------------------------------------------------
+
+TEST CASE  1: Normal Legitimate URL
+  • Input URL          : https://www.google.com
+  • Expected Behavior  : Predict LEGITIMATE with High Confidence and LOW Risk
+  • Actual Prediction  : LEGITIMATE
+  • Assessed Risk Level: LOW
+  • Model Confidence   : 98.50% (P(Legit)=98.50%, P(Phish)=1.50%)
+  • Feature Highlights :
+      - having_IP_Address         : 1 (Safe: Domain name used) [Source: URL Host]
+      - URL_Length                : 1 (Safe: Length 22 < 54 chars) [Source: URL Length]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE  2: Suspicious-Looking URL
+  • Input URL          : http://suspicious-bank-login.com:8080/secure/verify
+  • Expected Behavior  : Flag non-standard port and HTTP, elevate Risk to MEDIUM
+  • Actual Prediction  : LEGITIMATE
+  • Assessed Risk Level: MEDIUM
+  • Model Confidence   : 51.27% (P(Legit)=51.27%, P(Phish)=48.73%)
+  • Feature Highlights :
+      - having_IP_Address         : 1 (Safe: Domain name used) [Source: URL Host]
+      - URL_Length                : 1 (Safe: Length 51 < 54 chars) [Source: URL Length]
+      - Prefix_Suffix             : -1 (Malicious: Domain contains hyphen '-') [Source: Domain Name]
+      - SSLfinal_State            : -1 (Malicious: Insecure HTTP protocol) [Source: Protocol & Host]
+      - port                      : -1 (Malicious: Non-standard Port (8080)) [Source: URL Port]
+      - DNSRecord                 : -1 (Suspicious: Domain failed DNS resolution) [Source: Local DNS Lookup]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE  3: HTTPS Legitimate URL
+  • Input URL          : https://en.wikipedia.org/wiki/Machine_learning
+  • Expected Behavior  : Predict LEGITIMATE with High Confidence and LOW Risk
+  • Actual Prediction  : LEGITIMATE
+  • Assessed Risk Level: LOW
+  • Model Confidence   : 97.75% (P(Legit)=97.75%, P(Phish)=2.25%)
+  • Feature Highlights :
+      - having_IP_Address         : 1 (Safe: Domain name used) [Source: URL Host]
+      - URL_Length                : 1 (Safe: Length 46 < 54 chars) [Source: URL Length]
+      - having_Sub_Domain         : 0 (Suspicious: Single subdomain) [Source: Subdomain Hierarchy]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE  4: HTTP Insecure URL
+  • Input URL          : http://info.cern.ch
+  • Expected Behavior  : Flag insecure HTTP protocol (SSLfinal_State = -1)
+  • Actual Prediction  : LEGITIMATE
+  • Assessed Risk Level: MEDIUM
+  • Model Confidence   : 69.78% (P(Legit)=69.78%, P(Phish)=30.22%)
+  • Feature Highlights :
+      - having_IP_Address         : 1 (Safe: Domain name used) [Source: URL Host]
+      - URL_Length                : 1 (Safe: Length 19 < 54 chars) [Source: URL Length]
+      - having_Sub_Domain         : 0 (Suspicious: Single subdomain) [Source: Subdomain Hierarchy]
+      - SSLfinal_State            : -1 (Malicious: Insecure HTTP protocol) [Source: Protocol & Host]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE  5: Very Long URL (>75 chars)
+  • Input URL          : https://federmacedoadv.com.br/3f/aze/ab51e2e319e51502f416dbe46b773a5e/?cmd=_home&dispatch=11004d58f5b74f8dc1e7c2e8dd4105e811004d58f5b74f8dc1e7c2e8dd4105e8
+  • Expected Behavior  : Flag URL_Length as malicious (-1)
+  • Actual Prediction  : LEGITIMATE
+  • Assessed Risk Level: LOW
+  • Model Confidence   : 95.37% (P(Legit)=95.37%, P(Phish)=4.63%)
+  • Feature Highlights :
+      - having_IP_Address         : 1 (Safe: Domain name used) [Source: URL Host]
+      - URL_Length                : -1 (Malicious: Length 154 > 75 chars) [Source: URL Length]
+      - DNSRecord                 : -1 (Suspicious: Domain failed DNS resolution) [Source: Local DNS Lookup]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE  6: URL Containing @ Symbol
+  • Input URL          : http://user@paypal-verify.com/login
+  • Expected Behavior  : Flag having_At_Symbol (-1) and Prefix_Suffix (-1)
+  • Actual Prediction  : LEGITIMATE
+  • Assessed Risk Level: MEDIUM
+  • Model Confidence   : 61.91% (P(Legit)=61.91%, P(Phish)=38.09%)
+  • Feature Highlights :
+      - having_IP_Address         : 1 (Safe: Domain name used) [Source: URL Host]
+      - URL_Length                : 1 (Safe: Length 35 < 54 chars) [Source: URL Length]
+      - having_At_Symbol          : -1 (Malicious: Contains '@' symbol) [Source: URL Characters]
+      - Prefix_Suffix             : -1 (Malicious: Domain contains hyphen '-') [Source: Domain Name]
+      - SSLfinal_State            : -1 (Malicious: Insecure HTTP protocol) [Source: Protocol & Host]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE  7: URL Containing IP Address
+  • Input URL          : http://192.168.1.1/admin-login.html
+  • Expected Behavior  : Flag having_IP_Address (-1) and HTTP (-1)
+  • Actual Prediction  : LEGITIMATE
+  • Assessed Risk Level: MEDIUM
+  • Model Confidence   : 56.34% (P(Legit)=56.34%, P(Phish)=43.66%)
+  • Feature Highlights :
+      - having_IP_Address         : -1 (Malicious: IP address used directly) [Source: URL Host]
+      - URL_Length                : 1 (Safe: Length 35 < 54 chars) [Source: URL Length]
+      - having_Sub_Domain         : -1 (Malicious: Multiple subdomains) [Source: Subdomain Hierarchy]
+      - SSLfinal_State            : -1 (Malicious: Insecure HTTP protocol) [Source: Protocol & Host]
+      - DNSRecord                 : -1 (Suspicious: Domain failed DNS resolution) [Source: Local DNS Lookup]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE  8: URL with Suspicious Keywords in Host
+  • Input URL          : http://https-paypal-login-alert.net/myaccount
+  • Expected Behavior  : Flag HTTPS_token (-1), predict PHISHING
+  • Actual Prediction  : PHISHING
+  • Assessed Risk Level: MEDIUM
+  • Model Confidence   : 50.85% (P(Legit)=49.15%, P(Phish)=50.85%)
+  • Feature Highlights :
+      - having_IP_Address         : 1 (Safe: Domain name used) [Source: URL Host]
+      - URL_Length                : 1 (Safe: Length 45 < 54 chars) [Source: URL Length]
+      - Prefix_Suffix             : -1 (Malicious: Domain contains hyphen '-') [Source: Domain Name]
+      - SSLfinal_State            : -1 (Malicious: Insecure HTTP protocol) [Source: Protocol & Host]
+      - HTTPS_token               : -1 (Malicious: 'http(s)' token embedded in host) [Source: Domain Name]
+      - DNSRecord                 : -1 (Suspicious: Domain failed DNS resolution) [Source: Local DNS Lookup]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE  9: URL with Multiple Subdomains
+  • Input URL          : https://secure-login-verify-account.bankofamerica.com.evil-phishing.org/login
+  • Expected Behavior  : Flag multiple subdomains (-1) and long URL, predict PHISHING with HIGH Risk
+  • Actual Prediction  : PHISHING
+  • Assessed Risk Level: HIGH
+  • Model Confidence   : 82.96% (P(Legit)=17.04%, P(Phish)=82.96%)
+  • Feature Highlights :
+      - having_IP_Address         : 1 (Safe: Domain name used) [Source: URL Host]
+      - URL_Length                : -1 (Malicious: Length 77 > 75 chars) [Source: URL Length]
+      - Prefix_Suffix             : -1 (Malicious: Domain contains hyphen '-') [Source: Domain Name]
+      - having_Sub_Domain         : -1 (Malicious: Multiple subdomains) [Source: Subdomain Hierarchy]
+      - SSLfinal_State            : 0 (Suspicious: HTTPS on suspicious hostname) [Source: Protocol & Host]
+      - DNSRecord                 : -1 (Suspicious: Domain failed DNS resolution) [Source: Local DNS Lookup]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE 10: Invalid URL Syntax
+  • Input URL          : not_a_valid_url_string
+  • Expected Behavior  : Normalize safely or catch graceful validation warning
+  • Actual Prediction  : LEGITIMATE
+  • Assessed Risk Level: MEDIUM
+  • Model Confidence   : 70.59% (P(Legit)=70.59%, P(Phish)=29.41%)
+  • Feature Highlights :
+      - having_IP_Address         : 1 (Safe: Domain name used) [Source: URL Host]
+      - URL_Length                : 1 (Safe: Length 29 < 54 chars) [Source: URL Length]
+      - SSLfinal_State            : -1 (Malicious: Insecure HTTP protocol) [Source: Protocol & Host]
+      - Abnormal_URL              : -1 (Malicious: Abnormal URL host structure) [Source: URL Host Check]
+      - DNSRecord                 : -1 (Suspicious: Domain failed DNS resolution) [Source: Local DNS Lookup]
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+TEST CASE 11: Empty URL Input
+  • Input URL          : (Empty String "")
+  • Expected Behavior  : Throw clean IllegalArgumentException with user-friendly error message
+  • Actual Result      : Successfully caught validation error: "URL input cannot be empty. Please enter a valid website URL."
+  • Confidence         : N/A (Validation Guard)
+  • Status             : PASSED
+----------------------------------------------------------------------------------------------------
+
+FINAL TEST SUMMARY: 11 / 11 Test Cases PASSED (100.0%)
+====================================================================================================
